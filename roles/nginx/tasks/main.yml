@@ -1,0 +1,8 @@
+- name: Nginx latest version
+  apt:
+    name: nginx
+    state: latest
+- name: Check Nginx is tunning
+  systemd:
+    state: started
+    name: nginx

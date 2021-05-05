@@ -1,0 +1,22 @@
+- hosts: web
+  tasks:
+    - name: 'Instala o PHP5'
+      apt:
+        name: php5
+        state: latest
+      become: yes
+    - name: 'Instala o Apache2'
+      apt: 
+        name: apache2
+        state: latest
+      become: yes
+    - name: 'Instala o Apache2'
+      apt: 
+        name: libapache2-mod-php5
+        state: latest
+      become: yes    
+- name: 'Install MySQL'
+  hosts: web
+  become: yes
+  roles:
+  - mysql    
