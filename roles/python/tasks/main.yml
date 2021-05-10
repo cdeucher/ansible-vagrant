@@ -1,0 +1,80 @@
+---
+- shell: python3.7 --version
+  register: python37
+  ignore_errors: yes
+- debug:
+    msg: "{{ python37 }}"
+
+- name: Checking Python
+  become: true
+  become_user: root
+  ignore_errors: no
+  when: not python37.stdout_lines
+  block:
+    - name: Install requirements
+      apt:
+        install_recommends: yes
+        name: build-essential
+        state: latest
+
+    - name: Install requirements
+      apt:
+        state: latest
+        force: True
+        install_recommends: yes        
+        pkg:
+        - checkinstall
+        - libreadline-gplv2-dev 
+        - libncursesw5-dev 
+        - libssl-dev     
+        - libsqlite3-dev 
+        - tk-dev 
+        - libgdbm-dev 
+        - libc6-dev 
+        - libbz2-dev 
+        - libffi-dev 
+        - zlib1g-dev            
+
+    - stat: path=/tmp/Python-3.7.3.tgz
+      register: p
+
+    - name: Download Python3
+      get_url:
+        url: https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+        dest: /tmp
+        force: True            
+      when: p.stat.exists == false
+
+    - name: Unpack Python3
+      unarchive:
+        src: /tmp/Python-3.7.3.tgz
+        dest: /tmp
+        remote_src: yes
+        keep_newer: yes
+      when: p.stat.exists == false
+
+    - name: configure
+      command: chdir=/tmp/Python-3.7.3 ./configure --enable-optimizations   
+    - name: altinstall
+      command: chdir=/tmp/Python-3.7.3 make altinstall
+
+    - stat: path=/usr/local/bin/python3.7
+      register: p
+
+    - name: Update Python => Python3
+      command: "{{item}}"
+      with_items:
+        - update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.7 1            
+      when: p.stat.exists == true
+
+    - command: "python --version"
+      register: dir_out 
+    - debug:
+        msg: "{{ item }}"
+      with_items: "{{ dir_out.stdout_lines }}"    
+
+    #- command: "ls -la /usr/local/bin/python3.7"
+    #  register: dir_out 
+    #- debug:
+    #    msg: "{{ item }} "
+    #  with_items: "{{ dir_out.stdout_lines }}"      

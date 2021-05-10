@@ -1,22 +1,12 @@
-- hosts: web
-  tasks:
-    - name: 'Instala o PHP5'
-      apt:
-        name: php5
-        state: latest
-      become: yes
-    - name: 'Instala o Apache2'
-      apt: 
-        name: apache2
-        state: latest
-      become: yes
-    - name: 'Instala o Apache2'
-      apt: 
-        name: libapache2-mod-php5
-        state: latest
-      become: yes    
+- name: Python 3 install
+  hosts: dev1
+  gather_facts: False
+  become: true
+  roles:
+   - role: python
+
 - name: 'Install MySQL'
-  hosts: web
+  hosts: dev1
   become: yes
   roles:
-  - mysql    
+   - mysql    

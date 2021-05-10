@@ -8,8 +8,7 @@
   vars:
     packages:
       - mysql-server
-      - python3-pymysql
-      - python3-mysqldb
+      #- pymysql
   notify: restart mysql
 
 - name: Certifica que o serviço do MySQL está rodando

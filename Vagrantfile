@@ -7,7 +7,10 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.define "dev1" do |m|
-        m.vm.network "private_network", ip: "172.17.177.40"
+        m.vm.network "private_network", ip: "172.17.177.42"
+    end
+    config.vm.define "dev2" do |m|
+        m.vm.network "private_network", ip: "172.17.177.41"
     end
 
 end
